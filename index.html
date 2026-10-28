@@ -484,6 +484,22 @@ body.hq-living-sky .hq-sticker-toolbar button{
 }
 body.hq-living-sky .hq-sticker-note{color:#59437f}
 </style>
+
+<style id="hq-sticker-library-v8">
+body.hq-living-sky .hq-sticker-drawer{display:grid!important;grid-template-columns:125px minmax(0,1fr);gap:12px!important;padding:12px!important;max-height:430px;overflow:hidden}
+body.hq-living-sky .hq-sticker-drawer[hidden]{display:none!important}
+.hq-sticker-categories{display:flex;flex-direction:column;gap:5px;overflow-y:auto}
+.hq-sticker-category{padding:8px 10px;text-align:left;font:700 12px 'Pixelify Sans',sans-serif;color:#563878;background:linear-gradient(125deg,#ffebfb,#d6e8ff);border:1px solid white;border-radius:8px;cursor:pointer}
+.hq-sticker-category.on{background:linear-gradient(135deg,#fda9df,#b3e5ff 65%,#d9a9ff);border-color:#a48bc5;box-shadow:inset 0 1px white}
+.hq-sticker-library{min-width:0;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.hq-sticker-search-label{display:flex;flex-direction:column;gap:4px;font:700 12px 'Pixelify Sans',sans-serif;color:#57377e}
+#hq-sticker-search{width:100%;padding:9px 12px;border-radius:9px;border:1px solid #ac91d2;background:rgba(255,255,255,.8);font:13px Figtree,sans-serif;color:#49346d}
+.hq-sticker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;overflow-y:auto;padding:2px 3px 10px;align-content:start}
+body.hq-living-sky .hq-sticker-grid .hq-sticker-choice{min-width:0!important;min-height:88px;justify-content:center;gap:5px}
+.hq-sticker-choice span{font:700 11px 'Pixelify Sans',sans-serif;text-align:center}
+.hq-sticker-empty{font-size:13px;color:#6b4c88}
+@media(max-width:680px){body.hq-living-sky .hq-sticker-drawer{grid-template-columns:1fr;max-height:480px}.hq-sticker-categories{flex-direction:row;overflow-x:auto}.hq-sticker-category{flex:none}.hq-sticker-grid{grid-template-columns:repeat(auto-fill,minmax(76px,1fr))}}
+</style>
 </head><body><div id="hq-boot" role="status" aria-live="polite"><div class="boot-window"><div class="boot-title"><span>♡ TRADING HQ.EXE</span><span>□ ×</span></div><div class="boot-body"><div aria-hidden="true" style="font-size:36px">☁️ ✦ 💿 ✦ ☁️</div><h2>Trading HQ ♡</h2><p>INITIALIZING YOUR TRADING SPACE...</p><div class="boot-track"><div class="boot-fill"></div></div><p id="boot-msg">Loading your little corner of the market... ✦</p></div></div></div><div class="mq" aria-hidden="true"><div>✦ demo mode unless the data tag says delayed ✦ plan the trade, then trade the plan ✦ net R:R, not gross ✦ size the risk before entry ✦ be kind to future me ♡ ✦ write it in the diary ✦</div></div><div class="app"><aside class="g side"><h1>Trading HQ</h1><div class="sm" style="margin:2px 0 14px;letter-spacing:.8px">Discipline creates freedom</div><nav id="nav" aria-label="Sections"></nav><div class="quote">“Same focus, bigger future.”</div></aside><div class="wrap">
 <header><span id="gr"></span><span class="demo" id="dm">Demo mode · no live prices</span><span class="av" aria-hidden="true">M</span></header><div class="hq-desktop-tools"><span class="desktop-tag">✧ MY DIGITAL UNIVERSE · DESKTOP LAYOUT V2</span><button type="button" id="hq-reset-layout">↺ Reset windows</button><span class="desktop-hint">Drag title bars · resize from bottom-right · minimize or maximize · saved on this device</span></div><main id="view"></main>
 <p class="sm" style="margin-top:22px">Trading HQ places no orders. Candles are simulated; settings and your diary stay in this browser.</p></div></div>
@@ -606,6 +622,22 @@ function hqStickerArt(kind){
 // Each character is a square pixel, not a smooth vector shape.
 const palette={K:'#463b74',P:'#ff76b7',p:'#ffc0df',L:'#ae91ed',B:'#7ac5fa',C:'#91f4df',Y:'#ffe17e',W:'#fff9f3',D:'#6d83d4',R:'#f58e85',G:'#a9df87',S:'#c5d4ee'};
 const art={
+ rainbow:[
+'................','....KKKKKKKK....','..KKPPPPPPPPKK..','.KPPYYYYYYYYPPK.','KPPYYGGGGGGYYPPK','KPYGGCCCCGGYYPK','KYGCCBBBBCCGYK.','KGCBBLLLLBBCGK.','KCBLL....LLBCK.','KBL........LBK.','KK..........KK.','................','................','................','................','................'],
+ kitty:[
+'................','..KKK......KKK.','.KWWWK....KWWWK','KWWWWKKKKWWWWWK','KWWWWWWWWWWWWWK','KWWWWWWWWWWWWWK','KWWKWWWWWWKWWWK','KWWKWWYYWWKWWWK','KWWWWWWWWWWWWWK','.KWWWWWWWWWWWK.','..KWWWWWWWWWK..','...KKWWWWWKK...','.....KKKKK......','................','................','................'],
+ envelope:[
+'................','................','.KKKKKKKKKKKKKK.','KWWWWWWWWWWWWWWK','KWPWWWWWWWWWWPWK','KWWPPWWWWWWPPWWK','KWWWWPPWWPPWWWWK','KWWWWWPPPPWWWWWK','KWWWWWWPPWWWWWWK','KWWWWWWWWWWWWWWK','KWWWWWWWWWWWWWWK','.KKKKKKKKKKKKKK.','................','................','................','................'],
+ notebook:[
+'...KKKKKKKKKK...','..KBBBBBBBBBBK..','..KBCWCCCCCCBK..','..KBCPCCCCCCBK..','..KBCWCCCCCCBK..','..KBCPCCCCCCBK..','..KBCWCCCCCCBK..','..KBCPCCCCCCBK..','..KBCWCCCCCCBK..','..KBCPCCCCCCBK..','..KBCWCCCCCCBK..','..KBCPCCCCCCBK..','..KBBBBBBBBBBK..','...KKKKKKKKKK...','................','................'],
+ cloud:[
+'................','................','.....KKKK.......','...KKWWWWKK.....','..KWWWWWWWWKK...','.KWWWWWWWWWWK...','KWWWWWWWWWWWWKK.','KWWWWWWWWWWWWWWK','KWWWWWWWWWWWWWWK','.KKWWWWWWWWWWKK.','...KKKKKKKKKK...','................','................','................','................','................'],
+ moon:[
+'................','.....KKKKKK.....','...KKYYYYYK.....','..KYYYYYYK......','.KYYYYYYK.......','KYYYYYYK........','KYYYYYK.........','KYYYYYK.........','KYYYYYK.........','.KYYYYYYK.......','..KYYYYYYK......','...KKYYYYYK.....','.....KKKKKK.....','................','................','................'],
+ laptop:[
+'................','..KKKKKKKKKKKK..','..KLLLLLLLLLLK..','..KLBBBBBBBBLK..','..KLBPPPPBBBLK..','..KLBBBBBBBBLK..','..KLLLLLLLLLLK..','..KKKKKKKKKKKK..','.KSSSSSSSSSSSSK.','KSSSSSSSSSSSSSSK','KKKKKKKKKKKKKKKK','................','................','................','................','................'],
+ tv:[
+'................','.....KK..KK.....','......KKKK......','..KKKKKKKKKKKK..','.KPPPPPPPPPPPPK.','KPPBBBBBBBBPPPPK','KPPBWWWWWWBPPPPK','KPPBWWPPWWBPPPPK','KPPBWWWWWWBPPPPK','KPPBBBBBBBBPPPPK','KPPPPPPPPPPPPPPK','.KKKKKKKKKKKKKK.','...KK......KK...','................','................','................'],
  butterfly:[
 '................','..KK......KK....','.KPPK....KBBK...','KPPPPK..KBBBBK..','KPWPPPKKKBWBBBK.','KPPPPKLLKBBBBK.','.KPPPKLLKBBBK..','..KKKPLLBKKK...','....KPLLBK.....','..KKKPLLBKKK...','.KPPPKLLKBBBK..','KPPPPKLLKBBBBK.','KPWPPPKKKBWBBBK.','KPPPPK..KBBBBK..','.KPPK....KBBK...','..KK......KK....'],
  bow:[
@@ -661,6 +693,28 @@ function hqPaintStickers(){
   const status=document.getElementById('hq-sticker-selection');
   if(status)status.textContent=chosen?'Selected: '+chosen.kind+' · '+chosen.size+'px':'Tap a sticker to select it';
 }
+
+const HQ_STICKER_CATALOG=[
+ ['kitty','Kitty','Cute'],['heart','Pink Heart','Cute'],['bow','Bow','Cute'],['rainbow','Rainbow','Nature'],
+ ['sparkle','Sparkles','Decor'],['star','Star','Decor'],['butterfly','Butterfly','Nature'],
+ ['cherry','Cherries','Food'],['disc','Rainbow CD','Retro'],['folder','Folder','Tech'],
+ ['laptop','Laptop','Tech'],['envelope','Love Letter','Cute'],['notebook','Notebook','Tech'],
+ ['phone','Flip Phone','Retro'],['tv','Retro TV','Retro'],['window','Windows','Retro'],
+ ['cloud','Cloud','Nature'],['moon','Moon','Nature']
+];
+let hqStickerCategory='All',hqStickerSearch='';
+function hqRenderStickerLibrary(){
+ const drawer=document.getElementById('hq-sticker-drawer');if(!drawer)return;
+ const cats=drawer.querySelector('.hq-sticker-categories'),grid=drawer.querySelector('.hq-sticker-grid');
+ if(!cats||!grid)return;
+ const categories=['All','Cute','Tech','Decor','Food','Nature','Retro'];
+ cats.innerHTML=categories.map(c=>`<button type="button" class="hq-sticker-category ${hqStickerCategory===c?'on':''}" data-sticker-category="${c}" aria-pressed="${hqStickerCategory===c}">${c}</button>`).join('');
+ const visible=HQ_STICKER_CATALOG.filter(([kind,name,cat])=>(hqStickerCategory==='All'||cat===hqStickerCategory)&&(name+' '+cat).toLowerCase().includes(hqStickerSearch.toLowerCase()));
+ grid.innerHTML=visible.map(([kind,name])=>`<button type="button" class="hq-sticker-choice" data-sticker-add="${kind}" aria-label="Add ${name} sticker">${hqStickerArt(kind)}<span>${name}</span></button>`).join('');
+ const empty=drawer.querySelector('.hq-sticker-empty');if(empty)empty.hidden=visible.length>0;
+ const input=drawer.querySelector('#hq-sticker-search');if(input&&input.value!==hqStickerSearch)input.value=hqStickerSearch;
+}
+
 function hqExtras(){
   if(tab!=='dash')return;
   const root=$('#view');if(!root)return;
@@ -691,16 +745,15 @@ function hqExtras(){
   const front=document.createElement('div');front.className='hq-sticker-field front';front.setAttribute('aria-label','Floating desktop stickers');
   root.prepend(back);root.appendChild(front);
   const drawer=wrap.querySelector('.hq-sticker-drawer');
-  ['disc','folder','heart','phone','star','window','butterfly','bow','sparkle','cherry'].forEach(kind=>{
-    const b=document.createElement('button');b.type='button';b.className='hq-sticker-choice';
-    b.dataset.stickerAdd=kind;b.innerHTML=hqStickerArt(kind)+`<span>${kind}</span>`;
-    b.setAttribute('aria-label','Add '+kind+' sticker');drawer.appendChild(b);
-  });
+  drawer.innerHTML='<div class="hq-sticker-categories" role="group" aria-label="Sticker categories"></div><div class="hq-sticker-library"><label class="hq-sticker-search-label">Find your sticker <input id="hq-sticker-search" type="search" placeholder="Search stickers..." autocomplete="off"></label><div class="hq-sticker-grid" aria-label="Sticker collection"></div><p class="hq-sticker-empty" hidden>No stickers found. Try another search.</p></div>';
+  hqRenderStickerLibrary();
   hqPaintStickers();
 }
 function hqStickerDrag(){
   if(window.__hqStickerDrag)return;window.__hqStickerDrag=true;
+  document.addEventListener('input',e=>{if(e.target.id==='hq-sticker-search'){hqStickerSearch=e.target.value;hqRenderStickerLibrary();}});
   document.addEventListener('click',e=>{
+    const cat=e.target.closest('[data-sticker-category]');if(cat){hqStickerCategory=cat.dataset.stickerCategory;hqRenderStickerLibrary();return;}
     if(e.target.closest('#hq-toggle-drawer')){
       const d=document.getElementById('hq-sticker-drawer'),btn=document.getElementById('hq-toggle-drawer');
       if(!d)return;d.hidden=!d.hidden;btn.setAttribute('aria-expanded',String(!d.hidden));return;
