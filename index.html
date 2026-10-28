@@ -515,6 +515,7 @@ body.hq-living-sky .hq-sticker-grid .hq-sticker-choice{min-width:0!important;min
 #hq-add-sticky-note{background:linear-gradient(180deg,#fff,#f8c4e8 35%,#bfe5ff 82%,#f6d4ff)!important;border:1px solid #9c81bd!important;border-radius:7px!important;color:#503778!important;font-weight:800!important}
 @media(max-width:600px){.hq-sticky-note{width:170px}.hq-sticky-note textarea{font-size:15px}}
 </style>
+<style id="hq-widget-drag-v12">.hq-widget-movable{position:relative;will-change:translate}.hq-widget-handle{cursor:grab;touch-action:none;user-select:none}.hq-widget-handle:active{cursor:grabbing}</style>
 </head><body><div id="hq-boot" role="status" aria-live="polite"><div class="boot-window"><div class="boot-title"><span>♡ TRADING HQ.EXE</span><span>□ ×</span></div><div class="boot-body"><div aria-hidden="true" style="font-size:36px">☁️ ✦ 💿 ✦ ☁️</div><h2>Trading HQ ♡</h2><p>INITIALIZING YOUR TRADING SPACE...</p><div class="boot-track"><div class="boot-fill"></div></div><p id="boot-msg">Loading your little corner of the market... ✦</p></div></div></div><div class="mq" aria-hidden="true"><div>✦ demo mode unless the data tag says delayed ✦ plan the trade, then trade the plan ✦ net R:R, not gross ✦ size the risk before entry ✦ be kind to future me ♡ ✦ write it in the diary ✦</div></div><div class="app"><aside class="g side"><h1>Trading HQ</h1><div class="sm" style="margin:2px 0 14px;letter-spacing:.8px">Discipline creates freedom</div><nav id="nav" aria-label="Sections"></nav><div class="quote">“Same focus, bigger future.”</div></aside><div class="wrap">
 <header><span id="gr"></span><span class="demo" id="dm">Demo mode · no live prices</span><span class="av" aria-hidden="true">M</span></header><div class="hq-desktop-tools"><span class="desktop-tag">✧ MY DIGITAL UNIVERSE · DESKTOP LAYOUT V2</span><button type="button" id="hq-reset-layout">↺ Reset windows</button><span class="desktop-hint">Drag title bars · resize from bottom-right · minimize or maximize · saved on this device</span></div><main id="view"></main>
 <p class="sm" style="margin-top:22px">Trading HQ places no orders. Candles are simulated; settings and your diary stay in this browser.</p></div></div>
@@ -822,6 +823,42 @@ function hqSetupNotes(){
  });
 }
 
+
+const HQ_WIDGET_POS_KEY='hq-widget-drag-v12';
+function hqWidgetPositions(){try{return JSON.parse(localStorage.getItem(HQ_WIDGET_POS_KEY))||{}}catch(e){return {}}}
+function hqPrepareWidgetDrag(){
+ if(tab!=='dash')return;
+ const root=document.getElementById('view');if(!root)return;
+ const widgets=[...root.querySelectorAll('.hq-gadget-shelf .hq-gadget, .desk > .note, .desk > .win')];
+ const saved=hqWidgetPositions();
+ widgets.forEach(el=>{
+  const id=el.classList.contains('hq-gadget')?'gadget-'+[...root.querySelectorAll('.hq-gadget-shelf .hq-gadget')].indexOf(el):
+    el.classList.contains('note')?'old-note':'desk-'+[...root.querySelectorAll('.desk > .win')].indexOf(el);
+  el.dataset.hqWidgetId=id;el.classList.add('hq-widget-movable');
+  const p=saved[id];if(p)el.style.translate=p.x+'px '+p.y+'px';
+  const handle=el.querySelector('.gt, .wt, .tp')||el;
+  handle.classList.add('hq-widget-handle');handle.title='Drag to move widget';
+ });
+}
+function hqInstallWidgetDrag(){
+ if(window.__hqWidgetDragV12)return;window.__hqWidgetDragV12=true;
+ document.addEventListener('pointerdown',e=>{
+  const handle=e.target.closest('.hq-widget-handle');if(!handle||e.target.closest('button,input,textarea,select,a'))return;
+  const el=handle.closest('.hq-widget-movable');if(!el)return;
+  const p=hqWidgetPositions()[el.dataset.hqWidgetId]||{x:0,y:0};
+  const sx=e.clientX,sy=e.clientY;let x=p.x,y=p.y;
+  try{handle.setPointerCapture(e.pointerId)}catch(err){return}
+  const move=ev=>{x=Math.round(p.x+ev.clientX-sx);y=Math.round(p.y+ev.clientY-sy);el.style.translate=x+'px '+y+'px'};
+  const end=ev=>{
+   handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',end);handle.removeEventListener('pointercancel',end);
+   if(ev.type==='pointercancel'){el.style.translate=p.x+'px '+p.y+'px';return}
+   const all=hqWidgetPositions();all[el.dataset.hqWidgetId]={x,y};
+   try{localStorage.setItem(HQ_WIDGET_POS_KEY,JSON.stringify(all))}catch(err){}
+  };
+  handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end);
+ });
+}
+
 function hqExtras(){
   if(tab!=='dash')return;
   const root=$('#view');if(!root)return;
@@ -1036,7 +1073,7 @@ function hqWmInstall(){
 }
 
 
-function render(){hqWmTaskbar();nav();gr();$('#view').innerHTML={dash:dash,risk:risk,setups:setups,set:settings,journal:journal,analytics:analytics}[tab]();hqExtras();hqDesktopV2();winify();hqApplyLayout();hqInstallDrag();hqInstallWindowManager();hqInstallDesktopV2();hqPrepareResize();hqStickerDrag();hqSetupNotes();hqWmSetup();hqWmInstall();if(tab=='dash')initChart();if(tab=='risk')calcOut()}
+function render(){hqWmTaskbar();nav();gr();$('#view').innerHTML={dash:dash,risk:risk,setups:setups,set:settings,journal:journal,analytics:analytics}[tab]();hqExtras();hqDesktopV2();winify();hqApplyLayout();hqInstallDrag();hqInstallWindowManager();hqInstallDesktopV2();hqPrepareResize();hqStickerDrag();hqSetupNotes();hqPrepareWidgetDrag();hqInstallWidgetDrag();hqWmSetup();hqWmInstall();if(tab=='dash')initChart();if(tab=='risk')calcOut()}
 
 const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const HD="M1 0h2v1h-2zM6 0h2v1h-2zM0 1h4v1h-4zM5 1h4v1h-4zM0 2h9v1h-9zM0 3h9v1h-9zM1 4h7v1h-7zM2 5h5v1h-5zM3 6h3v1h-3zM4 7h1v1h-1z",pxh=(on,w=22)=>`<svg aria-hidden="true" viewBox="0 0 9 8" width="${w}" height="${Math.round(w*8/9)}" shape-rendering="crispEdges" style="filter:drop-shadow(0 2px 0 rgba(255,255,255,.9))"><path d="${HD}" fill="${on?'#FF5C9A':'#fff'}" stroke="#fff" stroke-width=".5"/></svg>`;
