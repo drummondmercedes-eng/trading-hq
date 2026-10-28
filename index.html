@@ -302,6 +302,16 @@ body.hq-living-sky .app{background:transparent!important}
 .hq-sky-panel .hq-sky-status{margin-left:auto;font-size:11px}
 @media(max-width:680px){.hq-sky-panel .hq-sky-status{margin-left:0}}
 </style>
+
+<style id="hq-glass-preview-v1">
+/* Visual-only makeover on preview branch; original layout and interactions retained. */
+:root{--hq-glass-edge:rgba(255,255,255,.85);--hq-glass-shadow:0 14px 35px rgba(73,67,120,.17)}
+body.hq-living-sky .hq-gadget,body.hq-living-sky .hq-sticker-workspace,body.hq-living-sky .hq-sky-panel{background:rgba(255,251,255,.75)!important;border:1px solid var(--hq-glass-edge)!important;box-shadow:var(--hq-glass-shadow)!important;backdrop-filter:blur(17px) saturate(1.18);-webkit-backdrop-filter:blur(17px) saturate(1.18)}
+body.hq-living-sky .hq-gadget{border-radius:17px!important}
+body.hq-living-sky .hq-sticker-toolbar button,body.hq-living-sky .hq-sticker-choice{background:linear-gradient(140deg,rgba(255,250,255,.97),rgba(233,226,255,.8))!important;border:1px solid #fff!important;box-shadow:0 3px 8px #7e6b9a18}
+body.hq-living-sky .hq-sky-panel{border-radius:18px!important}
+@media(prefers-reduced-motion:no-preference){body.hq-living-sky .hq-gadget,body.hq-living-sky .hq-sticker-toolbar button{transition:box-shadow .2s ease,background .2s ease}}
+</style>
 </head><body><div id="hq-boot" role="status" aria-live="polite"><div class="boot-window"><div class="boot-title"><span>♡ TRADING HQ.EXE</span><span>□ ×</span></div><div class="boot-body"><div aria-hidden="true" style="font-size:36px">☁️ ✦ 💿 ✦ ☁️</div><h2>Trading HQ ♡</h2><p>INITIALIZING YOUR TRADING SPACE...</p><div class="boot-track"><div class="boot-fill"></div></div><p id="boot-msg">Loading your little corner of the market... ✦</p></div></div></div><div class="mq" aria-hidden="true"><div>✦ demo mode unless the data tag says delayed ✦ plan the trade, then trade the plan ✦ net R:R, not gross ✦ size the risk before entry ✦ be kind to future me ♡ ✦ write it in the diary ✦</div></div><div class="app"><aside class="g side"><h1>Trading HQ</h1><div class="sm" style="margin:2px 0 14px;letter-spacing:.8px">Discipline creates freedom</div><nav id="nav" aria-label="Sections"></nav><div class="quote">“Same focus, bigger future.”<div style="font-size:24px;margin-top:6px" aria-hidden="true">🌸 ✨</div></div></aside><div class="wrap">
 <header><span id="gr"></span><span class="demo" id="dm">Demo mode · no live prices</span><span class="av" aria-hidden="true">M</span></header><div class="hq-desktop-tools"><span class="desktop-tag">✧ MY DIGITAL UNIVERSE · DESKTOP LAYOUT V2</span><button type="button" id="hq-reset-layout">↺ Reset windows</button><span class="desktop-hint">Drag title bars · resize from bottom-right · minimize or maximize · saved on this device</span></div><main id="view"></main>
 <p class="sm" style="margin-top:22px">Trading HQ places no orders. Candles are simulated; settings and your diary stay in this browser.</p></div></div>
