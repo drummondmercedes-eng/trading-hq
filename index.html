@@ -515,27 +515,6 @@ body.hq-living-sky .hq-sticker-grid .hq-sticker-choice{min-width:0!important;min
 #hq-add-sticky-note{background:linear-gradient(180deg,#fff,#f8c4e8 35%,#bfe5ff 82%,#f6d4ff)!important;border:1px solid #9c81bd!important;border-radius:7px!important;color:#503778!important;font-weight:800!important}
 @media(max-width:600px){.hq-sticky-note{width:170px}.hq-sticky-note textarea{font-size:15px}}
 </style>
-<style id="hq-movable-gadgets-ipod-v11">
-#view.hq-full-desktop{position:relative;min-height:950px}
-#view.hq-full-desktop .hq-gadget-shelf{display:contents!important}
-#view.hq-full-desktop .hq-movable-gadget{position:absolute!important;z-index:15;transform:none!important;margin:0!important}
-#view.hq-full-desktop .hq-gadget{width:190px;max-width:35vw;box-sizing:border-box}
-.hq-movable-gadget .gt,.hq-ipod-grip{cursor:grab;touch-action:none;user-select:none}
-.hq-ipod{width:170px;height:245px;padding:11px;border-radius:17px;background:linear-gradient(115deg,#a8a9b0 0%,#f8f9fb 18%,#c4c5cc 45%,#fafafa 70%,#a0a1a9 100%);border:1px solid #8c8e99;box-shadow:inset 1px 1px 2px #fff, inset -3px -3px 6px #7b7d8a55,5px 12px 20px #40416a55;box-sizing:border-box}
-.hq-ipod-grip{height:100%;display:flex;flex-direction:column;align-items:center}
-.hq-ipod-screen{width:100%;height:91px;border:3px solid #292a32;border-radius:5px;background:#fff;display:flex;gap:5px;padding:5px;box-sizing:border-box}
-.hq-ipod-cover{width:57px;flex-shrink:0;background:linear-gradient(135deg,#a2d7ff,#f6b8e9,#ad8cdb);display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-size:20px;text-shadow:0 1px #855a9c}
-.hq-ipod-track{display:flex;flex-direction:column;gap:4px;min-width:0;justify-content:center;color:#bd77a5;font-family:Figtree,sans-serif}
-.hq-ipod-track small{font-size:7px;color:#a1a1a9;font-weight:800}
-.hq-ipod-track strong{font-size:11px;line-height:1.1}
-.hq-ipod-track span{font-size:9px}
-.hq-ipod-playback{font-size:10px;color:#34343b;margin-top:5px}
-.hq-ipod-label{font:9px Figtree,sans-serif;color:#a3a3ab;margin:10px 0 3px}
-.hq-ipod-wheel{position:relative;width:110px;height:110px;border-radius:50%;background:linear-gradient(140deg,#fff,#e7e8eb 70%,#c5c6ce);box-shadow:inset 0 2px 5px #8c8d9c44,0 1px 1px #fff;color:#a1a3aa;font:700 10px Figtree,sans-serif}
-.hq-ipod-wheel .center{position:absolute;inset:32px;border-radius:50%;background:linear-gradient(140deg,#e8e9ee,#fff,#c9cbd2);box-shadow:inset 1px 2px 3px #a4a6b255}
-.hq-ipod-wheel .top{position:absolute;top:9px;left:40px}.hq-ipod-wheel .left{position:absolute;top:48px;left:10px}.hq-ipod-wheel .right{position:absolute;top:48px;right:10px}.hq-ipod-wheel .bottom{position:absolute;bottom:8px;left:45px}
-@media(max-width:650px){#view.hq-full-desktop .hq-gadget{width:150px;max-width:42vw}.hq-ipod{transform:scale(.85)!important;transform-origin:top left!important}}
-</style>
 </head><body><div id="hq-boot" role="status" aria-live="polite"><div class="boot-window"><div class="boot-title"><span>♡ TRADING HQ.EXE</span><span>□ ×</span></div><div class="boot-body"><div aria-hidden="true" style="font-size:36px">☁️ ✦ 💿 ✦ ☁️</div><h2>Trading HQ ♡</h2><p>INITIALIZING YOUR TRADING SPACE...</p><div class="boot-track"><div class="boot-fill"></div></div><p id="boot-msg">Loading your little corner of the market... ✦</p></div></div></div><div class="mq" aria-hidden="true"><div>✦ demo mode unless the data tag says delayed ✦ plan the trade, then trade the plan ✦ net R:R, not gross ✦ size the risk before entry ✦ be kind to future me ♡ ✦ write it in the diary ✦</div></div><div class="app"><aside class="g side"><h1>Trading HQ</h1><div class="sm" style="margin:2px 0 14px;letter-spacing:.8px">Discipline creates freedom</div><nav id="nav" aria-label="Sections"></nav><div class="quote">“Same focus, bigger future.”</div></aside><div class="wrap">
 <header><span id="gr"></span><span class="demo" id="dm">Demo mode · no live prices</span><span class="av" aria-hidden="true">M</span></header><div class="hq-desktop-tools"><span class="desktop-tag">✧ MY DIGITAL UNIVERSE · DESKTOP LAYOUT V2</span><button type="button" id="hq-reset-layout">↺ Reset windows</button><span class="desktop-hint">Drag title bars · resize from bottom-right · minimize or maximize · saved on this device</span></div><main id="view"></main>
 <p class="sm" style="margin-top:22px">Trading HQ places no orders. Candles are simulated; settings and your diary stay in this browser.</p></div></div>
@@ -843,47 +822,6 @@ function hqSetupNotes(){
  });
 }
 
-
-const HQ_GADGET_KEY='hq-gadget-positions-v1';
-function hqGadgetPositions(){try{return JSON.parse(localStorage.getItem(HQ_GADGET_KEY))||{}}catch(e){return {}}}
-function hqSetupGadgets(){
- const root=document.getElementById('view');if(!root||!root.classList.contains('hq-full-desktop'))return;
- const shelf=root.querySelector('.hq-gadget-shelf');if(!shelf)return;
- const old=hqGadgetPositions();
- shelf.querySelectorAll('.hq-gadget').forEach((g,i)=>{
-  g.classList.add('hq-movable-gadget');
-  const id=g.dataset.gadgetId,stored=old[id];
-  g.style.left=(stored?.x??(5+i*20))+'%';g.style.top=(stored?.y??(6+i*4))+'%';
-  g.querySelector('.gt')?.setAttribute('title','Drag to move');
- });
- const ipod=document.createElement('div');ipod.className='hq-ipod hq-movable-gadget';ipod.dataset.gadgetId='ipod';ipod.setAttribute('aria-label','Silver iPod desktop accessory');
- ipod.innerHTML=`<div class="hq-ipod-grip" title="Drag iPod to move"><div class="hq-ipod-screen"><div class="hq-ipod-cover"><span>✦</span><span>♡</span><span>✧</span></div><div class="hq-ipod-track"><small>HQ MIXTAPE</small><strong>Dream Mode</strong><span>Y2K forever ♡</span><div class="hq-ipod-playback">◀◀ &nbsp; ▮▮ &nbsp; ▶▶</div></div></div><div class="hq-ipod-label">MUSIC</div><div class="hq-ipod-wheel"><span class="top">MENU</span><span class="left">◀◀</span><span class="right">▶▶</span><span class="bottom">▶▮▮</span><span class="center"></span></div></div>`;
- root.appendChild(ipod);
- const saved=old.ipod;ipod.style.left=(saved?.x??70)+'%';ipod.style.top=(saved?.y??38)+'%';
-}
-function hqInstallGadgetDragging(){
- if(window.__hqGadgetDragging)return;window.__hqGadgetDragging=true;
- document.addEventListener('pointerdown',e=>{
-  const handle=e.target.closest('.hq-movable-gadget .gt,.hq-ipod-grip');if(!handle)return;
-  const el=handle.closest('.hq-movable-gadget'),root=document.getElementById('view');
-  if(!el||!root)return;
-  const bounds=root.getBoundingClientRect(),startX=e.clientX,startY=e.clientY;
-  const x=parseFloat(el.style.left)||0,y=parseFloat(el.style.top)||0;
-  handle.setPointerCapture(e.pointerId);
-  const move=ev=>{
-   const dx=(ev.clientX-startX)/bounds.width*100,dy=(ev.clientY-startY)/bounds.height*100;
-   el.style.left=Math.max(0,Math.min(88,x+dx))+'%';el.style.top=Math.max(0,Math.min(95,y+dy))+'%';
-  };
-  const end=ev=>{
-   handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',end);handle.removeEventListener('pointercancel',end);
-   if(ev.type==='pointercancel')return;
-   const p=hqGadgetPositions();p[el.dataset.gadgetId]={x:parseFloat(el.style.left),y:parseFloat(el.style.top)};
-   try{localStorage.setItem(HQ_GADGET_KEY,JSON.stringify(p))}catch(e){}
-  };
-  handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end);
- });
-}
-
 function hqExtras(){
   if(tab!=='dash')return;
   const root=$('#view');if(!root)return;
@@ -891,13 +829,12 @@ function hqExtras(){
   const time=new Date();
   const clock=time.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   const date=time.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-  shelf.innerHTML=`<div class="hq-gadget" data-gadget-id="clock"><div class="gt">◷ DESKTOP CLOCK</div><div class="big" id="hq-mini-clock">${clock}</div><div class="small">${date}</div></div>
-    <div class="hq-gadget" data-gadget-id="reminder"><div class="gt">♡ LITTLE REMINDER</div><div style="font:600 16px Caveat,cursive">The best trade can be no trade.</div><div class="small">Wait for your setup ✦</div></div>
-    <div class="hq-gadget" data-gadget-id="sessions"><div class="gt">☼ MARKET SESSIONS</div><div style="font-weight:700;font-size:15px">Asia · London · NY</div><div class="small">Session reference only · not live status</div></div>
-    <div class="hq-gadget" data-gadget-id="buddy"><div class="gt">✧ FOCUS BUDDY</div><div class="big" style="font-size:27px">૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა</div><div class="small">You've got this!</div></div>`;
+  shelf.innerHTML=`<div class="hq-gadget"><div class="gt">◷ DESKTOP CLOCK</div><div class="big" id="hq-mini-clock">${clock}</div><div class="small">${date}</div></div>
+    <div class="hq-gadget"><div class="gt">♡ LITTLE REMINDER</div><div style="font:600 16px Caveat,cursive">The best trade can be no trade.</div><div class="small">Wait for your setup ✦</div></div>
+    <div class="hq-gadget"><div class="gt">☼ MARKET SESSIONS</div><div style="font-weight:700;font-size:15px">Asia · London · NY</div><div class="small">Session reference only · not live status</div></div>
+    <div class="hq-gadget"><div class="gt">✧ FOCUS BUDDY</div><div class="big" style="font-size:27px">૮₍ ˶ᵔ ᵕ ᵔ˶ ₎ა</div><div class="small">You've got this!</div></div>`;
   root.prepend(shelf);
   root.classList.add('hq-full-desktop');
-  hqSetupGadgets();
   const wrap=document.createElement('section');wrap.className='hq-sticker-workspace';
   wrap.innerHTML=`<div class="hq-sticker-toolbar">
     <button type="button" id="hq-toggle-drawer" aria-expanded="true">Sticker Drawer ▾</button>
@@ -1099,7 +1036,7 @@ function hqWmInstall(){
 }
 
 
-function render(){hqWmTaskbar();nav();gr();$('#view').innerHTML={dash:dash,risk:risk,setups:setups,set:settings,journal:journal,analytics:analytics}[tab]();hqExtras();hqDesktopV2();winify();hqApplyLayout();hqInstallDrag();hqInstallWindowManager();hqInstallDesktopV2();hqPrepareResize();hqStickerDrag();hqSetupNotes();hqInstallGadgetDragging();hqWmSetup();hqWmInstall();if(tab=='dash')initChart();if(tab=='risk')calcOut()}
+function render(){hqWmTaskbar();nav();gr();$('#view').innerHTML={dash:dash,risk:risk,setups:setups,set:settings,journal:journal,analytics:analytics}[tab]();hqExtras();hqDesktopV2();winify();hqApplyLayout();hqInstallDrag();hqInstallWindowManager();hqInstallDesktopV2();hqPrepareResize();hqStickerDrag();hqSetupNotes();hqWmSetup();hqWmInstall();if(tab=='dash')initChart();if(tab=='risk')calcOut()}
 
 const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const HD="M1 0h2v1h-2zM6 0h2v1h-2zM0 1h4v1h-4zM5 1h4v1h-4zM0 2h9v1h-9zM0 3h9v1h-9zM1 4h7v1h-7zM2 5h5v1h-5zM3 6h3v1h-3zM4 7h1v1h-1z",pxh=(on,w=22)=>`<svg aria-hidden="true" viewBox="0 0 9 8" width="${w}" height="${Math.round(w*8/9)}" shape-rendering="crispEdges" style="filter:drop-shadow(0 2px 0 rgba(255,255,255,.9))"><path d="${HD}" fill="${on?'#FF5C9A':'#fff'}" stroke="#fff" stroke-width=".5"/></svg>`;
@@ -1118,7 +1055,11 @@ const sp=[[4,10,26,'#fff',0],[30,4,14,'#FF9EC4',.6],[62,12,22,'#C4CDDD',.3],[94,
 const rest=`<section class="g s c8"><div class="bar"><div><h2 style="margin:0">Setup scanner</h2><div class="sm">Not connected to live data: demo setups only. Reward-to-risk shown is gross.</div></div></div><div style="overflow-x:auto"><table><tr><th>Contract</th><th>Direction</th><th>Frame</th><th>Entry</th><th>Stop</th><th>Target</th><th>R:R</th><th>Checklist</th><th></th></tr>${rows}</table></div></section>
 <section class="g c4"><div class="bar"><h2 style="margin:0">Daily P&amp;L</h2><span class="pill">${now.toLocaleString('en-US',{month:'long',year:'numeric'})}</span></div><div class="out" style="grid-template-columns:repeat(2,1fr);gap:8px"><div><div class="sm">Net P/L</div><div class="num" style="font-size:28px">${J.length?usd(P.reduce((a,b)=>a+b,0)):'—'}</div></div><div><div class="sm">Win rate · trades</div><div class="num" style="font-size:28px">${J.length?Math.round(wn.length/J.length*100)+'%':'—'} · ${J.length}</div></div></div><div class="cg sm" style="text-align:center;margin:10px 0 4px"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class="cg">${calGrid()}</div><div class="sm" style="margin-top:8px">Fills from your diary. Winning days glow pink, losing days turn plum.</div></section>
 <section class="g c8"><h2>Latest market news</h2><p style="margin:6px 0 4px">No news feed connected.</p><div class="sm">Headlines need a licensed source. Until then this stays empty instead of showing made-up stories.</div></section>
-<section class="g c4"><h2>Quick tools</h2><div class="row2"><button data-a="tab" data-v="journal">New diary page</button><button data-a="tab" data-v="risk">Risk calculator</button><button data-a="tab" data-v="setups">Setup checklist</button><button data-a="tab" data-v="set">Settings</button></div></section>`;
+<section class="g c4"><h2>Quick tools</h2><div class="row2"><button data-a="tab" data-v="journal">New diary page</button><button data-a="tab" data-v="risk">Risk calculator</button><button data-a="tab" data-v="setups">Setup checklist</button><button data-a="tab" data-v="set">Settings</button></div></section>
+<section class="c12 desk" aria-label="Desk widgets">${sp}<div class="note"><span class="tp"></span><label class="sm" for="nt" style="position:absolute;left:-9999px">Sticky note</label><textarea id="nt" rows="4" data-n="1">${esc(S.note)}</textarea></div>
+${win('today’s focus',FOC.map((f,i)=>`<button class="foc ${fo.includes(i)?'d':''}" data-a="foc" data-v="${i}" aria-pressed="${fo.includes(i)}"><span aria-hidden="true">${fo.includes(i)?'✓':'♥'}</span>${f}</button>`).join(''),-2)}
+${win('how are we feeling?',`<div class="mood">${['🌸','😌','🔥','🥹','😵‍💫'].map(e=>`<button data-a="mood" data-v="${e}" class="${mo==e?'on':''}" aria-label="Mood ${e}" aria-pressed="${mo==e}">${e}</button>`).join('')}</div><div class="sm" style="margin-top:8px">Your pick is added to the next diary page you save.</div>`,2)}
+${win('plan streak',`<div style="display:flex;gap:6px">${hs}</div><div class="sm" style="margin-top:10px">${sc} of 5 days this week followed my plan. Counts days where every diary page says “Yes”.</div>`,-1.5)}</section>`;
 const AFF=['you are so cute!','be kind to yourself','plan > feelings','100% disciplined','keep being you','net R:R, not gross'],af=AFF[(S.aff||0)%AFF.length],pl=(S.plan&&S.plan.date==td)?S.plan.v:'',hb=pxh(true,200).replace('#FF5C9A','#FFB3CF'),fb=(h,d)=>`<div class="fb" style="animation-delay:${d}s">${h}</div>`;
 const fl=`<section class="fl" aria-label="Floating widgets">
 ${fb(win('message',`<div style="text-align:center"><div style="font:700 18px/1.2 'Pixelify Sans',sans-serif;text-transform:uppercase;margin:4px 0 12px">${esc(af)}</div><button data-a="aff">ok</button></div>`,-2),0)}
