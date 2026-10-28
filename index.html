@@ -333,7 +333,29 @@ body.hq-living-sky .win .wd{box-shadow:inset 0 1px 2px rgba(255,255,255,.85),0 1
 body.hq-living-sky .hq-gadget{background:linear-gradient(135deg,rgba(255,255,255,.79),rgba(255,228,247,.63) 48%,rgba(217,238,255,.69))!important;box-shadow:0 14px 34px rgba(80,65,124,.16),inset 0 1px rgba(255,255,255,.98)!important}
 @media(prefers-reduced-motion:no-preference){body.hq-living-sky .win,body.hq-living-sky .hq-gadget{transition:box-shadow .22s ease,background .22s ease}}
 </style>
-</head><body><div id="hq-boot" role="status" aria-live="polite"><div class="boot-window"><div class="boot-title"><span>♡ TRADING HQ.EXE</span><span>□ ×</span></div><div class="boot-body"><div aria-hidden="true" style="font-size:36px">☁️ ✦ 💿 ✦ ☁️</div><h2>Trading HQ ♡</h2><p>INITIALIZING YOUR TRADING SPACE...</p><div class="boot-track"><div class="boot-fill"></div></div><p id="boot-msg">Loading your little corner of the market... ✦</p></div></div></div><div class="mq" aria-hidden="true"><div>✦ demo mode unless the data tag says delayed ✦ plan the trade, then trade the plan ✦ net R:R, not gross ✦ size the risk before entry ✦ be kind to future me ♡ ✦ write it in the diary ✦</div></div><div class="app"><aside class="g side"><h1>Trading HQ</h1><div class="sm" style="margin:2px 0 14px;letter-spacing:.8px">Discipline creates freedom</div><nav id="nav" aria-label="Sections"></nav><div class="quote">“Same focus, bigger future.”<div style="font-size:24px;margin-top:6px" aria-hidden="true">🌸 ✨</div></div></aside><div class="wrap">
+
+<style id="hq-visible-glass-v3">
+/* Actual dashboard windows are #view .g, not decorative .win cards. */
+body.hq-living-sky #view .g{
+ background:linear-gradient(132deg,rgba(255,255,255,.66) 0%,rgba(255,216,243,.40) 38%,rgba(194,224,255,.40) 74%,rgba(255,255,255,.58) 100%)!important;
+ border:2px solid rgba(255,255,255,.94)!important;
+ border-radius:23px!important;
+ box-shadow:0 18px 45px rgba(69,52,117,.24),inset 0 2px rgba(255,255,255,.95),0 0 0 1px rgba(192,146,229,.46)!important;
+ backdrop-filter:blur(17px) saturate(1.35)!important;
+ -webkit-backdrop-filter:blur(17px) saturate(1.35)!important;
+}
+body.hq-living-sky #view .g .tb{
+ background:linear-gradient(95deg,#ffb9df 0%,#e4c1ff 36%,#b3ddff 72%,#f7c8ef 100%)!important;
+ border-bottom:2px solid rgba(255,255,255,.95)!important;
+ color:#593c74!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.8),0 3px 12px rgba(122,77,164,.15)!important;
+ padding-top:10px!important;padding-bottom:10px!important;
+}
+body.hq-living-sky #view .g .tb .ti{color:#b14d99!important}
+body.hq-living-sky .side .nv{font-family:Figtree,sans-serif;letter-spacing:.01em}
+body.hq-living-sky .side .quote{font-size:13px}
+</style>
+</head><body><div id="hq-boot" role="status" aria-live="polite"><div class="boot-window"><div class="boot-title"><span>♡ TRADING HQ.EXE</span><span>□ ×</span></div><div class="boot-body"><div aria-hidden="true" style="font-size:36px">☁️ ✦ 💿 ✦ ☁️</div><h2>Trading HQ ♡</h2><p>INITIALIZING YOUR TRADING SPACE...</p><div class="boot-track"><div class="boot-fill"></div></div><p id="boot-msg">Loading your little corner of the market... ✦</p></div></div></div><div class="mq" aria-hidden="true"><div>✦ demo mode unless the data tag says delayed ✦ plan the trade, then trade the plan ✦ net R:R, not gross ✦ size the risk before entry ✦ be kind to future me ♡ ✦ write it in the diary ✦</div></div><div class="app"><aside class="g side"><h1>Trading HQ</h1><div class="sm" style="margin:2px 0 14px;letter-spacing:.8px">Discipline creates freedom</div><nav id="nav" aria-label="Sections"></nav><div class="quote">“Same focus, bigger future.”</div></aside><div class="wrap">
 <header><span id="gr"></span><span class="demo" id="dm">Demo mode · no live prices</span><span class="av" aria-hidden="true">M</span></header><div class="hq-desktop-tools"><span class="desktop-tag">✧ MY DIGITAL UNIVERSE · DESKTOP LAYOUT V2</span><button type="button" id="hq-reset-layout">↺ Reset windows</button><span class="desktop-hint">Drag title bars · resize from bottom-right · minimize or maximize · saved on this device</span></div><main id="view"></main>
 <p class="sm" style="margin-top:22px">Trading HQ places no orders. Candles are simulated; settings and your diary stay in this browser.</p></div></div>
 <script>
@@ -386,7 +408,7 @@ const cache={};function data(s,t){const RB=realBars(s,t);if(RB)return RB;const k
 function sw(d,k=3){const o=[];for(let i=k;i<d.length-k;i++){let H=1,L=1;for(let j=1;j<=k;j++){if(d[i].h<=d[i-j].h||d[i].h<=d[i+j].h)H=0;if(d[i].l>=d[i-j].l||d[i].l>=d[i+j].l)L=0}if(H)o.push({i,t:'h',p:d[i].h});if(L)o.push({i,t:'l',p:d[i].l})}return o}
 function trend(d){const s=sw(d),H=s.filter(x=>x.t=='h').slice(-2),L=s.filter(x=>x.t=='l').slice(-2);if(H.length<2||L.length<2)return'Unclear';const u=H[1].p>H[0].p&&L[1].p>L[0].p,w=H[1].p<H[0].p&&L[1].p<L[0].p;return u?'Bullish':w?'Bearish':'Mixed'}
 function session(){const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()).reduce((a,x)=>(a[x.type]=x.value,a),{}),h=(+p.hour%24)+(+p.minute)/60,w=p.weekday;let l;if(w=='Sat'||(w=='Fri'&&h>=17)||(w=='Sun'&&h<18))l='Weekend close';else if(h>=17&&h<18)l='Daily maintenance break';else if(h>=9.5&&h<16)l='US cash session';else if(h>=3&&h<9.5)l='London and pre-market';else l='Overnight (Globex)';return{t:`${p.hour%24}:${p.minute} ET`,l}}
-function nav(){$('#nav').innerHTML=[['dash','🖥️ Dashboard'],['setups','🔍 Setup scanner'],['risk','🧮 Risk calculator'],['journal','📓 Diary journal'],['analytics','📈 Analytics'],['set','⚙️ Settings']].map(([k,l])=>`<button class="nv ${tab==k?'on':''}" data-a="tab" data-v="${k}">${l}</button>`).join('')+`<button class="nv" data-a="tips" aria-pressed="${S.tips}">${S.tips?'Hide':'Show'} tips</button>`}
+function nav(){$('#nav').innerHTML=[['dash','Dashboard'],['setups','Setup scanner'],['risk','Risk calculator'],['journal','Diary journal'],['analytics','Analytics'],['set','Settings']].map(([k,l])=>`<button class="nv ${tab==k?'on':''}" data-a="tab" data-v="${k}">${l}</button>`).join('')+`<button class="nv" data-a="tips" aria-pressed="${S.tips}">${S.tips?'Hide':'Show'} tips</button>`}
 const WT={dash:'dashboard',setups:'setup_scanner',risk:'risk_calculator',journal:'diary_journal',analytics:'analytics',set:'settings'};
 function clk(){const e=$('#clk');if(e)e.textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}
 function winify(){$$('#view .g').forEach(g=>{if(g.querySelector(':scope>.tb'))return;let t=g.dataset.tt;if(!t){const h=g.querySelector('h2');if(!h)return;t=h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')+'.exe'}const d=document.createElement('div');d.className='tb';d.setAttribute('aria-label','Window title bar');const a=document.createElement('span');a.className='ti';a.textContent='♥';const b=document.createElement('span');b.textContent=t;const c=document.createElement('span');c.className='tbn';c.innerHTML='<button type="button" data-hq-win="min" title="Minimize window" aria-label="Minimize window">−</button><button type="button" data-hq-win="max" title="Maximize or restore window" aria-label="Maximize or restore window">□</button><button type="button" data-hq-win="front" title="Bring to front" aria-label="Bring to front">↑</button>'; d.append(a,b,c);g.insertBefore(d,g.firstChild);if(!g.classList.contains('keep'))g.classList.add('hh')})}
