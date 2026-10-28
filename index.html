@@ -501,6 +501,20 @@ body.hq-living-sky .hq-sticker-grid .hq-sticker-choice{min-width:0!important;min
 @media(max-width:680px){body.hq-living-sky .hq-sticker-drawer{grid-template-columns:1fr;max-height:480px}.hq-sticker-categories{flex-direction:row;overflow-x:auto}.hq-sticker-category{flex:none}.hq-sticker-grid{grid-template-columns:repeat(auto-fill,minmax(76px,1fr))}}
 </style>
 <style id="hq-glossy-stickers-v9">.hq-glossy-sticker{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(1px 2px 1px rgba(65,41,110,.22))}.hq-sticker-choice .hq-glossy-sticker{width:58px;height:58px;max-width:100%;flex-shrink:0}.hq-sticker .hq-glossy-sticker{width:100%;height:100%}</style>
+<style id="hq-sticky-notes-v1">
+#hq-note-field{position:absolute;inset:0;pointer-events:none;z-index:16}
+.hq-sticky-note{position:absolute;width:210px;min-height:190px;pointer-events:auto;border:2px solid #fff;border-radius:8px;box-shadow:0 0 0 1px #a884c2,5px 8px 15px #4d3c7940,inset 0 1px white;background:linear-gradient(145deg,#fff0f9,#ffd3ed 70%,#f5bce4);overflow:hidden}
+.hq-sticky-note[data-note-color="lavender"]{background:linear-gradient(145deg,#faf0ff,#dcc9ff)}
+.hq-sticky-note[data-note-color="blue"]{background:linear-gradient(145deg,#f1faff,#b9e7ff)}
+.hq-sticky-note[data-note-color="yellow"]{background:linear-gradient(145deg,#fffdf0,#ffedaa)}
+.hq-sticky-note[data-note-color="mint"]{background:linear-gradient(145deg,#f2fff9,#bdf5e1)}
+.hq-note-bar{height:31px;display:flex;align-items:center;gap:5px;padding:3px 6px;border-bottom:1px solid #ffffffa9;background:linear-gradient(180deg,#ffffffbd,#e5c6ef85)}
+.hq-note-grip{flex:1;touch-action:none;cursor:grab;font:800 12px 'Pixelify Sans',sans-serif;color:#68417f;user-select:none}
+.hq-note-bar button{border:1px solid #a987c1;background:#ffffffa8;color:#68417f;border-radius:4px;width:25px;height:23px;cursor:pointer}
+.hq-sticky-note textarea{display:block;resize:none;width:100%;height:155px;min-height:155px;box-sizing:border-box;padding:12px;border:0;outline:0;background:transparent;color:#513b66;font:500 16px 'Caveat',cursive;line-height:1.35}
+#hq-add-sticky-note{background:linear-gradient(180deg,#fff,#f8c4e8 35%,#bfe5ff 82%,#f6d4ff)!important;border:1px solid #9c81bd!important;border-radius:7px!important;color:#503778!important;font-weight:800!important}
+@media(max-width:600px){.hq-sticky-note{width:170px}.hq-sticky-note textarea{font-size:15px}}
+</style>
 </head><body><div id="hq-boot" role="status" aria-live="polite"><div class="boot-window"><div class="boot-title"><span>♡ TRADING HQ.EXE</span><span>□ ×</span></div><div class="boot-body"><div aria-hidden="true" style="font-size:36px">☁️ ✦ 💿 ✦ ☁️</div><h2>Trading HQ ♡</h2><p>INITIALIZING YOUR TRADING SPACE...</p><div class="boot-track"><div class="boot-fill"></div></div><p id="boot-msg">Loading your little corner of the market... ✦</p></div></div></div><div class="mq" aria-hidden="true"><div>✦ demo mode unless the data tag says delayed ✦ plan the trade, then trade the plan ✦ net R:R, not gross ✦ size the risk before entry ✦ be kind to future me ♡ ✦ write it in the diary ✦</div></div><div class="app"><aside class="g side"><h1>Trading HQ</h1><div class="sm" style="margin:2px 0 14px;letter-spacing:.8px">Discipline creates freedom</div><nav id="nav" aria-label="Sections"></nav><div class="quote">“Same focus, bigger future.”</div></aside><div class="wrap">
 <header><span id="gr"></span><span class="demo" id="dm">Demo mode · no live prices</span><span class="av" aria-hidden="true">M</span></header><div class="hq-desktop-tools"><span class="desktop-tag">✧ MY DIGITAL UNIVERSE · DESKTOP LAYOUT V2</span><button type="button" id="hq-reset-layout">↺ Reset windows</button><span class="desktop-hint">Drag title bars · resize from bottom-right · minimize or maximize · saved on this device</span></div><main id="view"></main>
 <p class="sm" style="margin-top:22px">Trading HQ places no orders. Candles are simulated; settings and your diary stay in this browser.</p></div></div>
@@ -750,6 +764,64 @@ function hqRenderStickerLibrary(){
  const input=drawer.querySelector('#hq-sticker-search');if(input&&input.value!==hqStickerSearch)input.value=hqStickerSearch;
 }
 
+
+/* Desktop sticky notes: browser-local, editable, movable, and persistent. */
+const HQ_NOTES_KEY='hq-sticky-notes-v1';
+const HQ_NOTE_COLORS=['pink','lavender','blue','yellow','mint'];
+let hqNoteActive=null;
+function hqGetNotes(){try{const a=JSON.parse(localStorage.getItem(HQ_NOTES_KEY));return Array.isArray(a)?a:[]}catch(e){return []}}
+function hqStoreNotes(notes){try{localStorage.setItem(HQ_NOTES_KEY,JSON.stringify(notes))}catch(e){}}
+function hqEscapeNote(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function hqPaintNotes(){
+ const host=document.getElementById('hq-note-field');if(!host)return;
+ const active=document.activeElement,focusId=active?.closest?.('.hq-sticky-note')?.dataset.noteId;
+ if(focusId&&active?.matches('textarea'))return;
+ host.innerHTML=hqGetNotes().map(n=>`<article class="hq-sticky-note" data-note-id="${hqEscapeNote(n.id)}" data-note-color="${HQ_NOTE_COLORS.includes(n.color)?n.color:'pink'}" style="left:${Math.max(0,Math.min(85,Number(n.x)||0))}%;top:${Math.max(0,Math.min(85,Number(n.y)||0))}%">
+ <div class="hq-note-bar"><span class="hq-note-grip" aria-label="Drag note">✦ NOTE</span><button type="button" data-note-color-next title="Change note color" aria-label="Change note color">◒</button><button type="button" data-note-remove title="Delete note" aria-label="Delete note">×</button></div>
+ <textarea aria-label="Sticky note text" placeholder="Write yourself a little note...">${hqEscapeNote(n.text||'')}</textarea></article>`).join('');
+}
+function hqAddNote(){
+ const notes=hqGetNotes(),id='note-'+Date.now()+'-'+Math.floor(Math.random()*100000);
+ notes.push({id,text:'',color:'pink',x:Math.min(70,12+(notes.length*11)%57),y:Math.min(65,18+(notes.length*9)%47)});
+ hqStoreNotes(notes);hqPaintNotes();
+ document.querySelector('.hq-sticky-note[data-note-id="'+id+'"] textarea')?.focus();
+}
+function hqSetupNotes(){
+ if(window.__hqNotesInstalled)return;window.__hqNotesInstalled=true;
+ document.addEventListener('click',e=>{
+ if(e.target.closest('#hq-add-sticky-note')){hqAddNote();return}
+ const change=e.target.closest('[data-note-color-next]'),remove=e.target.closest('[data-note-remove]');
+ const el=(change||remove)?.closest('.hq-sticky-note');if(!el)return;
+ const notes=hqGetNotes(),i=notes.findIndex(n=>n.id===el.dataset.noteId);if(i<0)return;
+ if(remove){if(!confirm('Delete this sticky note?'))return;notes.splice(i,1)}
+ else{notes[i].color=HQ_NOTE_COLORS[(HQ_NOTE_COLORS.indexOf(notes[i].color)+1)%HQ_NOTE_COLORS.length]}
+ hqStoreNotes(notes);hqPaintNotes();
+ });
+ document.addEventListener('input',e=>{
+ if(!e.target.matches('.hq-sticky-note textarea'))return;
+ const el=e.target.closest('.hq-sticky-note'),notes=hqGetNotes(),n=notes.find(n=>n.id===el.dataset.noteId);
+ if(n){n.text=e.target.value;hqStoreNotes(notes)}
+ });
+ document.addEventListener('pointerdown',e=>{
+ const grip=e.target.closest('.hq-note-grip');if(!grip)return;
+ const el=grip.closest('.hq-sticky-note'),field=document.getElementById('hq-note-field');if(!field)return;
+ const rect=field.getBoundingClientRect(),startX=e.clientX,startY=e.clientY;
+ const initialX=parseFloat(el.style.left),initialY=parseFloat(el.style.top);
+ grip.setPointerCapture(e.pointerId);
+ const move=ev=>{
+ el.style.left=Math.max(0,Math.min(90,initialX+(ev.clientX-startX)/rect.width*100))+'%';
+ el.style.top=Math.max(0,Math.min(90,initialY+(ev.clientY-startY)/rect.height*100))+'%';
+ };
+ const end=ev=>{
+ grip.removeEventListener('pointermove',move);grip.removeEventListener('pointerup',end);grip.removeEventListener('pointercancel',end);
+ if(ev.type==='pointercancel')return;
+ const notes=hqGetNotes(),n=notes.find(n=>n.id===el.dataset.noteId);
+ if(n){n.x=parseFloat(el.style.left);n.y=parseFloat(el.style.top);hqStoreNotes(notes)}
+ };
+ grip.addEventListener('pointermove',move);grip.addEventListener('pointerup',end);grip.addEventListener('pointercancel',end);
+ });
+}
+
 function hqExtras(){
   if(tab!=='dash')return;
   const root=$('#view');if(!root)return;
@@ -776,6 +848,9 @@ function hqExtras(){
   <div class="hq-sticker-drawer" id="hq-sticker-drawer" aria-label="Choose pixel art stickers"></div>
   <div class="hq-sticker-note">drag & decorate ♡ · positions saved on this device</div>`;
   shelf.after(wrap);
+  const notes=document.createElement("div");notes.id="hq-note-field";notes.setAttribute("aria-label","Desktop sticky notes");root.appendChild(notes);
+  const addNote=document.createElement("button");addNote.type="button";addNote.id="hq-add-sticky-note";addNote.textContent="＋ Sticky Note";wrap.querySelector(".hq-sticker-toolbar").appendChild(addNote);
+  hqPaintNotes();
   const back=document.createElement('div');back.className='hq-sticker-field back';back.setAttribute('aria-label','Background stickers');
   const front=document.createElement('div');front.className='hq-sticker-field front';front.setAttribute('aria-label','Floating desktop stickers');
   root.prepend(back);root.appendChild(front);
@@ -961,7 +1036,7 @@ function hqWmInstall(){
 }
 
 
-function render(){hqWmTaskbar();nav();gr();$('#view').innerHTML={dash:dash,risk:risk,setups:setups,set:settings,journal:journal,analytics:analytics}[tab]();hqExtras();hqDesktopV2();winify();hqApplyLayout();hqInstallDrag();hqInstallWindowManager();hqInstallDesktopV2();hqPrepareResize();hqStickerDrag();hqWmSetup();hqWmInstall();if(tab=='dash')initChart();if(tab=='risk')calcOut()}
+function render(){hqWmTaskbar();nav();gr();$('#view').innerHTML={dash:dash,risk:risk,setups:setups,set:settings,journal:journal,analytics:analytics}[tab]();hqExtras();hqDesktopV2();winify();hqApplyLayout();hqInstallDrag();hqInstallWindowManager();hqInstallDesktopV2();hqPrepareResize();hqStickerDrag();hqSetupNotes();hqWmSetup();hqWmInstall();if(tab=='dash')initChart();if(tab=='risk')calcOut()}
 
 const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const HD="M1 0h2v1h-2zM6 0h2v1h-2zM0 1h4v1h-4zM5 1h4v1h-4zM0 2h9v1h-9zM0 3h9v1h-9zM1 4h7v1h-7zM2 5h5v1h-5zM3 6h3v1h-3zM4 7h1v1h-1z",pxh=(on,w=22)=>`<svg aria-hidden="true" viewBox="0 0 9 8" width="${w}" height="${Math.round(w*8/9)}" shape-rendering="crispEdges" style="filter:drop-shadow(0 2px 0 rgba(255,255,255,.9))"><path d="${HD}" fill="${on?'#FF5C9A':'#fff'}" stroke="#fff" stroke-width=".5"/></svg>`;
