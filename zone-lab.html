@@ -9,7 +9,7 @@
 <label>Market<select id="market"><option value="NQ">NQ / MNQ</option><option value="GC">Gold / MGC</option></select></label>
 <label>5-minute OHLC CSV<input id="file" type="file" accept=".csv,text/csv"></label>
 <button id="demo">Load synthetic demo</button><button class="secondary" id="run">Run scanner</button>
-</div><p class="note">CSV columns: <code>time,open,high,low,close</code> (optional volume). Timestamps must include a timezone (Z or ±HH:MM). Five-minute candles only, ascending or unsorted; incomplete live candles are not supported. The demo is synthetic and not evidence of trading performance.</p><p id="error"></p></section>
+</div><p class="note">CSV columns: <code>time,open,high,low,close</code> (optional volume). Timestamps must include a timezone (Z or ±HH:MM). Five-minute candles only, ascending or unsorted; incomplete live candles are not supported. The demo is synthetic and not evidence of trading performance. It may produce zero confirmed zones.</p><p id="error"></p></section>
 <section class="panel"><div class="metrics"><div class="metric">5M candles<b id="count">—</b></div><div class="metric">Confirmed zones<b id="zones">—</b></div><div class="metric">Entry triggers<b id="signals">—</b></div><div class="metric">Latest candle<b id="latest">—</b></div></div></section>
 <section class="panel"><h3>15-minute price history</h3><canvas id="plot" width="1000" height="250"></canvas><p class="note">Pink = 15M closes; green/red = active confirmed support/resistance zones at end of sample. This is a simplified visual, not a candlestick chart.</p></section>
 <section class="panel"><h3>Detected zones</h3><div class="scroll"><table><thead><tr><th>Type</th><th>Range</th><th>Reactions</th><th>Confirmed at</th><th>Status</th></tr></thead><tbody id="zoneRows"></tbody></table></div></section>
@@ -25,14 +25,14 @@ function scan(five){const bars=aggregate(five,900000),hours=aggregate(five,36000
 for(const z of zones)if(z.status!=='broken'&&((z.side==='support'&&c.close<z.lo-buffer)||(z.side==='resistance'&&c.close>z.hi+buffer))){z.status='broken';z.brokenAt=c.t}
 const p=bars[i-2];const left=bars[i-4],prev=bars[i-3],next=bars[i-1];if(!left)continue;
 for(const side of ['support','resistance']){const price=side==='support'?p.low:p.high;const pivot=side==='support'?(p.low<left.low&&p.low<prev.low&&p.low<=next.low&&p.low<=c.low):(p.high>left.high&&p.high>prev.high&&p.high>=next.high&&p.high>=c.high);if(!pivot)continue;
-let z=zones.find(z=>z.side===side&&z.status!=='broken'&&Math.abs(z.center-price)<=w/2);
+let z=zones.filter(z=>z.side===side&&z.status!=='broken'&&price>=z.lo-w/2&&price<=z.hi+w/2).sort((a,b)=>Math.abs(a.center-price)-Math.abs(b.center-price))[0];
 if(!z){z={side,center:price,lo:price-w/2,hi:price+w/2,reactions:1,firstAt:p.t,lastAt:p.t,status:'forming',confirmedAt:null,departed:false};zones.push(z)}
-else if(z.departed&&p.t>z.lastAt){z.reactions++;z.lastAt=p.t;z.departed=false;if(z.reactions===2){z.status='confirmed';z.confirmedAt=c.t;events.push({t:c.t,zone:z})}}
+else if(z.departed&&p.t>z.lastAt){z.reactions++;z.lastAt=p.t;z.departed=false;if(z.reactions>=2&&z.confirmedAt===null){z.status='confirmed';z.confirmedAt=c.t;events.push({t:c.t,zone:z})}}
 }
-for(const z of zones){if(z.status==='broken')continue;const away=z.side==='support'?c.high-z.hi:z.lo-c.low;if(away>=atr*.25)z.departed=true}
+for(const z of zones){if(z.status==='broken')continue;const away=z.side==='support'?c.close-z.hi:z.lo-c.close;if(away>=atr*.25)z.departed=true}
 }
 const entries=[];for(let k=24;k<five.length;k++){const c=five[k],prev=five[k-1];if(!((c.close>prev.high)||(c.close<prev.low)))continue;const side=c.close>prev.high?'long':'short';const recent=bars.filter(b=>b.t+900000<=c.t);if(recent.length<5)continue;const last15=recent[recent.length-1];const h=hours.filter(x=>x.t+3600000<=c.t);if(h.length<2)continue;const trend1=Math.sign(h[h.length-1].close-h[h.length-2].close),trend15=Math.sign(last15.close-recent[recent.length-4].close),dir=side==='long'?1:-1;if(trend1!==dir||trend15!==dir)continue;
-const z=zones.find(z=>z.confirmedAt!==null&&z.confirmedAt<c.t&&(z.brokenAt===undefined||z.brokenAt>c.t)&&z.side===(dir===1?'support':'resistance')&&five.slice(Math.max(0,k-6),k).some(b=>b.low<=z.hi&&b.high>=z.lo));if(!z)continue;
+const z=zones.find(z=>z.confirmedAt!==null&&z.confirmedAt<=c.t&&(z.brokenAt===undefined||z.brokenAt>c.t)&&z.side===(dir===1?'support':'resistance')&&five.slice(Math.max(0,k-6),k).some(b=>b.low<=z.hi&&b.high>=z.lo));if(!z)continue;
 const entry=c.close,stop=dir===1?Math.min(z.lo,five[k-1].low)-.1:Math.max(z.hi,five[k-1].high)+.1;const risk=Math.abs(entry-stop);if((entry-stop)*dir<=0||risk<=0)continue;
 const opp=zones.filter(x=>x.side===(dir===1?'resistance':'support')&&x.confirmedAt!==null&&x.confirmedAt<c.t&&(x.brokenAt===undefined||x.brokenAt>c.t)).map(x=>x.center).filter(v=>(v-entry)*dir>0).sort((a,b)=>Math.abs(a-entry)-Math.abs(b-entry));if(!opp.length)continue;const target=opp[0],cost=$('market').value==='NQ'?1:0.5,net=(Math.abs(target-entry)-cost)/(risk+cost);if(net<2)continue;
 if(entries.length&&entries[entries.length-1].t===c.t)continue;entries.push({t:c.t,side,entry,stop,target,net,zone:z.center})}
