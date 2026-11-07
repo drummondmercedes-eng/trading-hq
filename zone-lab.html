@@ -8,8 +8,8 @@
 <section class="panel"><div class="controls">
 <label>Market<select id="market"><option value="NQ">NQ / MNQ</option><option value="GC">Gold / MGC</option></select></label>
 <label>5-minute OHLC CSV<input id="file" type="file" accept=".csv,text/csv"></label>
-<button id="demo">Load synthetic demo</button><button class="secondary" id="run">Run scanner</button>
-</div><p class="note">CSV columns: <code>time,open,high,low,close</code> (optional volume). Timestamps must include a timezone (Z or ±HH:MM). Five-minute candles only, ascending or unsorted; incomplete live candles are not supported. The demo is synthetic and not evidence of trading performance. It may produce zero confirmed zones.</p><p id="error"></p></section>
+<button id="demo">Load synthetic demo</button><button class="secondary" id="fixture">Load two-touch test</button><button class="secondary" id="run">Run scanner</button>
+</div><p class="note">CSV columns: <code>time,open,high,low,close</code> (optional volume). Timestamps must include a timezone (Z or ±HH:MM). Five-minute candles only, ascending or unsorted; incomplete live candles are not supported. The demo is synthetic and not evidence of trading performance. It may produce zero confirmed zones. Use the two-touch test to exercise repeated zone reactions.</p><p id="error"></p></section>
 <section class="panel"><div class="metrics"><div class="metric">5M candles<b id="count">—</b></div><div class="metric">Confirmed zones<b id="zones">—</b></div><div class="metric">Entry triggers<b id="signals">—</b></div><div class="metric">Latest candle<b id="latest">—</b></div></div></section>
 <section class="panel"><h3>15-minute price history</h3><canvas id="plot" width="1000" height="250"></canvas><p class="note">Pink = 15M closes; green/red = active confirmed support/resistance zones at end of sample. This is a simplified visual, not a candlestick chart.</p></section>
 <section class="panel"><h3>Detected zones</h3><div class="scroll"><table><thead><tr><th>Type</th><th>Range</th><th>Reactions</th><th>Confirmed at</th><th>Status</th></tr></thead><tbody id="zoneRows"></tbody></table></div></section>
@@ -41,5 +41,9 @@ function render(){if(!candles.length)return;$('error').textContent='';try{result
 function draw(r){const cv=$('plot'),ctx=cv.getContext('2d'),a=r.bars.slice(-130);ctx.clearRect(0,0,cv.width,cv.height);if(!a.length)return;const lo=Math.min(...a.map(x=>x.low)),hi=Math.max(...a.map(x=>x.high)),y=v=>230-(v-lo)/(hi-lo||1)*210,x=i=>20+i/(a.length-1||1)*960;for(const z of r.zones.filter(z=>z.status!=='broken'&&z.confirmedAt!==null)){ctx.fillStyle=z.side==='support'?'#2bbf7250':'#ee536550';ctx.fillRect(20,y(z.hi),960,Math.max(1,y(z.lo)-y(z.hi)))}ctx.strokeStyle='#f1a8df';ctx.lineWidth=2;ctx.beginPath();a.forEach((c,i)=>i?ctx.lineTo(x(i),y(c.close)):ctx.moveTo(x(i),y(c.close)));ctx.stroke()}
 $('file').onchange=async e=>{try{candles=parseCSV(await e.target.files[0].text());render()}catch(err){$('error').textContent=err.message}};
 $('run').onclick=render;$('market').onchange=render;
+
+// Controlled test fixture: repeated support touches at a known level, followed by departures.
+// This validates whether the zone lifecycle can reach confirmation without market data.
+$('fixture').onclick=()=>{const base=22000,start=Date.UTC(2026,9,5,0,0);candles=[];for(let i=0;i<360;i++){const j=Math.floor(i/3);const phase=j%24;const wave=phase<=6?phase*3:phase<=12?(12-phase)*3:phase<=18?-(phase-12)*3:-(24-phase)*3;const close=base+wave;const open=i?candles[i-1].close:close;const high=Math.max(open,close)+0.8,low=Math.min(open,close)-0.8;candles.push({t:start+i*300000,open,high,low,close})}render()};
 $('demo').onclick=()=>{let p=$('market').value==='NQ'?22000:4000;let start=Date.UTC(2026,9,1,0,0);candles=[];for(let i=0;i<500;i++){const open=p;const wave=35*Math.sin(i/15)+15*Math.sin(i/6)+i*.035;const close=($('market').value==='NQ'?22000:4000)+wave;const high=Math.max(open,close)+3,low=Math.min(open,close)-3;candles.push({t:start+i*300000,open,high,low,close});p=close}render()};$('demo').click();
 </script></html>
